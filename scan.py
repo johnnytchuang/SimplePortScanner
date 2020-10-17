@@ -1,4 +1,4 @@
-import os, sys, argparse, logging, time
+import os, sys, argparse, time, netaddr
 from scapy.all import *
 import numpy as np
 
@@ -74,38 +74,56 @@ def udp(hosts,ports,timeout=0.5):
                 print("CHECK",port,host,'UDP')
     return results
 
-def parse_args():
+def get_args():
     parser = argparse.ArgumentParser(description='Port scanning over both TCP and UDP connections')
     hopt = parser.add_mutually_exclusive_group(required=True)
-    parser.add_argument('--host', metavar='HOST', type=str, nargs='+',
+    hopt.add_argument('--host', metavar='HOST', type=str, nargs='+',
                     help='Commandline input for one or moe hosts.')
-    parser.add_argument('--host-file', metavar='HOST', type=str, nargs=1,
+    hopt.add_argument('--host-file', metavar='HOST', type=str, nargs=1,
                     help='A file containing the hosts.')
 
-    parser.add_argument('--port', metavar='PORT', type=str, nargs='+',
+    popt = parser.add_mutually_exclusive_group(required=True)
+    popt.add_argument('--port', metavar='PORT', type=int, nargs='+',
                     help='Commandline input for one or moe hosts.')
-    parser.add_argument('--port-file', metavar='PORT', type=str, nargs=1,
+    popt.add_argument('--port-file', metavar='PORT', type=str, nargs=1,
                     help='A file containing the ports.')
-
+    
     return parser.parse_args()
 
-def main(args):
-    print(args)
-    '''
-    s = time.time()
-    logger = logging.getLogger("scapy.runtime")
-    logger.setLevel(logging.ERROR)
+def parse(args):
+    hosts = []
+    ports = []
 
-    hosts = ['192.168.86.42']#, '127.0.0.1']
-    ports = [22,80]
+    if args.host != None:
+        for ip in args.host:
+            hosts += [ str(_ip) for _ip in netaddr.IPNetwork(ip) ]
+    elif args.host_file != None:
+        with open(args.host_file, 'r') as f:
+            for line in f:
+                hosts.append(line.lstrip().rstrip())
+
+    if args.port != None:
+        ports = args.ports
+    elif args.port_file != None:
+        with open(args.port_file, 'r') as f:
+            for line in f:
+                ports.append(line.lstrip().rstrip())
+
+    return hosts, ports
+
+def main(args):
+    hosts, ports = parse(args)
+
+    s = time.time()
 
     results = tcp_normal(hosts, ports)
     results += udp(hosts, ports)
     print(sorted(results))
     print('Completed in {} seconds'.format(time.time() - s))
-    '''
+
 
 if __name__ == "__main__":
-    args = parse_args()
-    main(args)
+    args = get_args()
+    print(args)
+    #main(args)
 
