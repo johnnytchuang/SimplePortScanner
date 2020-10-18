@@ -1,5 +1,5 @@
 # SimplePortScanner
-SimplePortScanner is a port scanning tool as the name suggested. It uses both __TCP__ and __UDP__ connections to destect port status.
+SimplePortScanner is a port scanning tool as the name suggested. It uses both __TCP__ and __UDP__ connections to detect specified port status.
 
 ## Dependencies
 This program uses `netaddr`, `scapy`, `numpy`, `tabulate`, `html-creator` for some of the features.
