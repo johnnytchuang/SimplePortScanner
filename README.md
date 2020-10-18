@@ -3,7 +3,7 @@ SimplePortScanner is a port scanning tool as the name suggested. It uses both __
 
 ## Dependencies
 This program uses `netaddr`, `scapy`, `numpy`, `tabulate`, `html-creator` for some of the features.
-Use `pip install netaddr scapy numpy tabulate html-creator` to install these dependencies.
+Use ```pip install netaddr scapy numpy tabulate html-creator``` to install these dependencies.
 
 ## Usage
 
